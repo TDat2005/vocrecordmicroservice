@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Tag, Plus, Edit2, Trash2 } from 'lucide-react';
+import { API_BASE } from '../config/api';
 
 export function AdminDiscounts() {
     const [discounts, setDiscounts] = useState<any[]>([]);
@@ -19,7 +20,7 @@ export function AdminDiscounts() {
     }, []);
 
     const fetchDiscounts = () => {
-        fetch('http://localhost/clonevocrecord/api/discount.php?action=get_all')
+        fetch(`${API_BASE}/discount.php?action=get_all`)
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -33,7 +34,7 @@ export function AdminDiscounts() {
         const action = formData.MaGG ? 'update' : 'create';
         const method = formData.MaGG ? 'PUT' : 'POST';
 
-        fetch(`http://localhost/clonevocrecord/api/discount.php?action=${action}`, {
+        fetch(`${API_BASE}/discount.php?action=${action}`, {
             method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -52,7 +53,7 @@ export function AdminDiscounts() {
 
     const handleDelete = (id: string) => {
         if (window.confirm("Bạn có chắc muốn xoá mã giảm giá này?")) {
-            fetch(`http://localhost/clonevocrecord/api/discount.php?action=delete&id=${id}`, {
+            fetch(`${API_BASE}/discount.php?action=delete&id=${id}`, {
                 method: 'DELETE'
             })
             .then(res => res.json())

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { API_BASE } from '../config/api';
 
 export function Cart() {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart, appliedDiscount, setAppliedDiscount } = useCart();
@@ -11,7 +12,7 @@ export function Cart() {
   const handleApplyCoupon = () => {
     if (!couponInput) return;
     setLoading(true);
-    fetch('http://localhost/clonevocrecord/api/discount.php?action=check', {
+    fetch(`${API_BASE}/discount.php?action=check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponInput, cartTotal: getCartTotal() })

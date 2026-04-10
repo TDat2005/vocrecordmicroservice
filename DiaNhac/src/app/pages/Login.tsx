@@ -1,5 +1,6 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { API_BASE } from '../config/api';
 
 export function Login() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export function Login() {
     setIsLoginLoading(true);
 
     try {
-      const response = await fetch('http://localhost/clonevocrecord/api/auth.php?action=login', {
+      const response = await fetch(`${API_BASE}/auth.php?action=login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginAccount, password: loginPassword })

@@ -1,3 +1,4 @@
+import { IMAGE_BASE } from '../config/api';
 import { Outlet } from 'react-router';
 import { Header } from '../components/Header';
 import { MobileBottomNav } from '../components/MobileBottomNav';
@@ -54,7 +55,7 @@ export function Root() {
             {/* Vọc Records */}
             <div>
               {/* Logo Footer */}
-              <img src="http://localhost/clonevocrecord/images/voc_logo_new.png" alt="Vọc Records" className="h-16 object-contain mb-4" />
+              <img src={`${IMAGE_BASE}/voc_logo_new.png`} alt="Vọc Records" className="h-16 object-contain mb-4" />
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>
                   <a href="/about" className="hover:text-white transition-colors">

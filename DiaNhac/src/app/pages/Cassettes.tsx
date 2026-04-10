@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Filter } from 'lucide-react';
+import { API_BASE } from '../config/api';
 
 export function Cassettes() {
   const [sortBy, setSortBy] = useState('name');
@@ -9,7 +10,7 @@ export function Cassettes() {
   const categoryName = 'Cassette';
 
   useEffect(() => {
-    fetch('http://localhost/clonevocrecord/api/products.php?action=list')
+    fetch(`${API_BASE}/products.php?action=list`)
       .then(res => res.json())
       .then(data => {
         if(data.success && data.data) {

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, ArrowLeft, Shield } from 'lucide-react';
+import { API_BASE } from '../config/api';
 
 type Step = 'info' | 'otp';
 
@@ -51,7 +52,7 @@ export function Register() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost/clonevocrecord/api/auth.php?action=send_register_otp', {
+      const response = await fetch(`${API_BASE}/auth.php?action=send_register_otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -78,7 +79,7 @@ export function Register() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost/clonevocrecord/api/auth.php?action=verify_register_otp', {
+      const response = await fetch(`${API_BASE}/auth.php?action=verify_register_otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,7 +112,7 @@ export function Register() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost/clonevocrecord/api/auth.php?action=send_register_otp', {
+      const response = await fetch(`${API_BASE}/auth.php?action=send_register_otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })

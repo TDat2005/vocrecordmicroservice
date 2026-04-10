@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { ShoppingBag, CreditCard, Truck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { API_BASE } from '../config/api';
 
 export function Checkout() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export function Checkout() {
         const u = JSON.parse(loggedInUser);
         setUser(u);
         if(u.customer_id) {
-            fetch(`http://localhost/clonevocrecord/api/account.php?action=get_addresses&customer_id=${u.customer_id}`)
+            fetch(`${API_BASE}/account.php?action=get_addresses&customer_id=${u.customer_id}`)
             .then(res => res.json())
             .then(addrData => {
                 if(addrData.success && addrData.data && addrData.data.length > 0) {
@@ -37,7 +38,7 @@ export function Checkout() {
                     setSelectedAddrId(addrData.data[0].MaDC);
                 } else {
                     // Nếu chưa có sổ, lấy profile mặc định dựng 1 địa chỉ ảo
-                    fetch(`http://localhost/clonevocrecord/api/account.php?action=get_profile&customer_id=${u.customer_id}`)
+                    fetch(`${API_BASE}/account.php?action=get_profile&customer_id=${u.customer_id}`)
                     .then(res => res.json())
                     .then(data => {
                         if(data.success && data.data && (data.data.address || data.data.phone)) {
@@ -121,7 +122,7 @@ export function Checkout() {
          }
     }
 
-    fetch('http://localhost/clonevocrecord/api/orders.php?action=create', {
+    fetch(`${API_BASE}/orders.php?action=create`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
@@ -165,7 +166,7 @@ export function Checkout() {
   };
 
   const handleCheckPaid = () => {
-       fetch(`http://localhost/clonevocrecord/api/orders.php?action=check_status&order_id=${payosModalData.order_id}`)
+       fetch(`${API_BASE}/orders.php?action=check_status&order_id=${payosModalData.order_id}`)
        .then(res => res.json())
        .then(data => {
            if(data.success && data.status === 'dathanhtoan') {
@@ -180,7 +181,7 @@ export function Checkout() {
   const handleApplyCoupon = () => {
     if (!couponInput) return;
     setCouponLoading(true);
-    fetch('http://localhost/clonevocrecord/api/discount.php?action=check', {
+    fetch(`${API_BASE}/discount.php?action=check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponInput, cartTotal: getCartTotal() })
