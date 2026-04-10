@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 class Database
 {
     private $host = 'localhost';
-    private $db = 'clonevocrecord';
+    private $db = 'vocrecord';
     private $user = 'kaichou';
     private $pass = '123456';
     private $charset = 'utf8mb4';
