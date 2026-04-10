@@ -1,6 +1,7 @@
 <?php
 // Controller: Đơn Hàng (OrderController)
 // Xử lý logic nghiệp vụ đặt hàng, hủy đơn, cập nhật trạng thái
+// Tích hợp gửi email thông báo qua EmailService
 
 require_once __DIR__ . '/../models/DonHangModel.php';
 require_once __DIR__ . '/../models/SanPhamModel.php';
@@ -8,6 +9,7 @@ require_once __DIR__ . '/../models/KhachHangModel.php';
 require_once __DIR__ . '/../controllers/DiscountController.php';
 require_once __DIR__ . '/../config/PayOSService.php';
 require_once __DIR__ . '/../config/payos.php';
+require_once __DIR__ . '/../config/EmailService.php';
 
 class OrderController {
     private $model;
@@ -91,6 +93,26 @@ class OrderController {
             }
 
             $this->model->commit();
+
+            // === GỬI EMAIL XÁC NHẬN ĐƠN HÀNG ===
+            try {
+                $customerInfo = $this->khachHangModel->getProfile($customerId);
+                if ($customerInfo && !empty($customerInfo['Email'])) {
+                    $orderItems = $this->model->getOrderItems($maDH);
+                    $emailData = [
+                        'orderId'   => $maDH,
+                        'total'     => $totalAfterDiscount,
+                        'items'     => $orderItems,
+                        'address'   => $address,
+                        'nguoiNhan' => $nguoiNhan,
+                        'sdtNhan'   => $sdtNhan,
+                    ];
+                    EmailService::sendOrderConfirmation($customerInfo['Email'], $emailData);
+                }
+            } catch(Exception $emailErr) {
+                // Email thất bại không ảnh hưởng đến đơn hàng
+                error_log('Order email error: ' . $emailErr->getMessage());
+            }
             
             $response = ['success' => true, 'message' => 'Đặt hàng thành công!', 'order_id' => $maDH];
             if ($payosData) {
@@ -126,6 +148,19 @@ class OrderController {
         }
 
         if ($this->model->updateStatus($orderId, $status, $adminId)) {
+            // === GỬI EMAIL THÔNG BÁO CẬP NHẬT TRẠNG THÁI ===
+            try {
+                $order = $this->model->getById($orderId);
+                if ($order && $order['MaKH']) {
+                    $customer = $this->khachHangModel->getProfile($order['MaKH']);
+                    if ($customer && !empty($customer['Email'])) {
+                        EmailService::sendOrderStatusUpdate($customer['Email'], $orderId, $status);
+                    }
+                }
+            } catch(Exception $emailErr) {
+                error_log('Status email error: ' . $emailErr->getMessage());
+            }
+
             echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Lỗi cập nhật']);
@@ -163,6 +198,17 @@ class OrderController {
             }
 
             $this->model->commit();
+
+            // === GỬI EMAIL THÔNG BÁO HUỶ ĐƠN ===
+            try {
+                $customer = $this->khachHangModel->getProfile($customerId);
+                if ($customer && !empty($customer['Email'])) {
+                    EmailService::sendOrderStatusUpdate($customer['Email'], $orderId, 'dahuy');
+                }
+            } catch(Exception $emailErr) {
+                error_log('Cancel email error: ' . $emailErr->getMessage());
+            }
+
             echo json_encode(['success' => true, 'message' => 'Đã hủy đơn hàng thành công']);
         } catch(Exception $e) {
             $this->model->rollBack();

@@ -21,6 +21,11 @@ class TaiKhoanModel {
         return $this->pdo->lastInsertId();
     }
 
+    public function updatePassword($maTK, $hashedPassword) {
+        $stmt = $this->pdo->prepare("UPDATE TaiKhoan SET MatKhau = ? WHERE MaTK = ?");
+        return $stmt->execute([$hashedPassword, $maTK]);
+    }
+
     public function beginTransaction() { $this->pdo->beginTransaction(); }
     public function commit() { $this->pdo->commit(); }
     public function rollBack() { $this->pdo->rollBack(); }
