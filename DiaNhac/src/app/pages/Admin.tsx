@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_BASE } from '../config/api';
+
 import {
   LayoutDashboard,
   Package,
@@ -69,13 +69,13 @@ export function Admin() {
   }
 
   const fetchDashboard = () => {
-      fetch(`${API_BASE}/admin.php?action=dashboard_stats`)
+      fetch(`http://localhost/clonevocrecord/api/admin.php?action=dashboard_stats`)
       .then(res => res.json())
       .then(data => { if(data.success) setStats(data.data); })
       .catch(console.error);
 
       // Fetch Revenue Report cho 30 ngày
-      fetch(`${API_BASE}/admin.php?action=revenue_report`)
+      fetch(`http://localhost/clonevocrecord/api/admin.php?action=revenue_report`)
       .then(res => res.json())
       .then(data => {
           if(data.success) {
@@ -85,7 +85,7 @@ export function Admin() {
   };
 
   const fetchOrders = () => {
-    fetch(`${API_BASE}/orders.php?action=list`)
+    fetch(`http://localhost/clonevocrecord/api/orders.php?action=list`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data) {
@@ -104,14 +104,14 @@ export function Admin() {
   };
 
   const fetchCustomers = () => {
-      fetch(`${API_BASE}/admin.php?action=customers_list`)
+      fetch(`http://localhost/clonevocrecord/api/admin.php?action=customers_list`)
       .then(res => res.json())
       .then(data => { if(data.success) setCustomers(data.data); })
       .catch(console.error);
   };
 
   const fetchInventory = () => {
-      fetch(`${API_BASE}/admin.php?action=inventory_list`)
+      fetch(`http://localhost/clonevocrecord/api/admin.php?action=inventory_list`)
       .then(res => res.json())
       .then(data => { if(data.success) setInventory(data.data); })
       .catch(console.error);
@@ -126,7 +126,7 @@ export function Admin() {
 
   const handleUpdateOrderStatus = async (orderId: number, status: string) => {
       try {
-          const res = await fetch(`${API_BASE}/orders.php?action=update_status`, {
+          const res = await fetch(`http://localhost/clonevocrecord/api/orders.php?action=update_status`, {
               method: 'POST', body: JSON.stringify({order_id: orderId, status: status}), headers: {'Content-Type': 'application/json'}
           });
           const d = await res.json();
@@ -140,7 +140,7 @@ export function Admin() {
   const handleDeleteProduct = async (productId: number) => {
       if(!window.confirm("BẠN CÓ CHẮC CHẮN MUỐN XÓA SẢN PHẨM NÀY KHỎI KHO? HÀNH ĐỘNG KHÔNG THỂ HOÀN TÁC!")) return;
       try {
-          const res = await fetch(`${API_BASE}/products.php?action=delete`, {
+          const res = await fetch(`http://localhost/clonevocrecord/api/products.php?action=delete`, {
               method: 'POST', body: JSON.stringify({id: productId}), headers: {'Content-Type': 'application/json'}
           });
           const d = await res.json();
@@ -158,7 +158,7 @@ export function Admin() {
     payload.id = editingProduct.id; // Push ID
     
     try {
-        const res = await fetch(`${API_BASE}/products.php?action=update`, {
+        const res = await fetch(`http://localhost/clonevocrecord/api/products.php?action=update`, {
             method: 'POST', body: JSON.stringify(payload), headers: {'Content-Type': 'application/json'}
         });
         const d = await res.json();
@@ -257,7 +257,7 @@ export function Admin() {
                 const formData = new FormData(e.currentTarget);
                 const payload = Object.fromEntries(formData.entries());
                 try {
-                    const res = await fetch(`${API_BASE}/products.php?action=create`, {
+                    const res = await fetch(`http://localhost/clonevocrecord/api/products.php?action=create`, {
                         method: 'POST', body: JSON.stringify(payload), headers: {'Content-Type': 'application/json'}
                     });
                     const d = await res.json();
@@ -472,7 +472,7 @@ export function Admin() {
                         
                         const note = prompt("Nhập ghi chú phiếu nhập:");
                         
-                        fetch(`${API_BASE}/admin.php?action=import_stock`, {
+                        fetch(`http://localhost/clonevocrecord/api/admin.php?action=import_stock`, {
                             method: 'POST',
                             body: JSON.stringify({admin_id: user.customer_id, items: parsed, note}),
                             headers: {'Content-Type': 'application/json'}
@@ -524,7 +524,7 @@ export function Admin() {
                                     <div className="flex items-center justify-center gap-2">
                                         <button onClick={() => {
                                             // Fetch detail before edit
-                                            fetch(`${API_BASE}/products.php?action=detail&id=` + sp.id)
+                                            fetch(`http://localhost/clonevocrecord/api/products.php?action=detail&id=` + sp.id)
                                             .then(res => res.json())
                                             .then(data => {
                                                 if(data.success) {
@@ -568,7 +568,7 @@ export function Admin() {
                  const fd = new FormData(e.currentTarget);
                  const payload = Object.fromEntries(fd.entries());
                  payload.account_id = user.customer_id; // giả định
-                 fetch(`${API_BASE}/blog.php?action=create`, {
+                 fetch(`http://localhost/clonevocrecord/api/blog.php?action=create`, {
                      method: 'POST', body: JSON.stringify(payload), headers:{'Content-Type': 'application/json'}
                  }).then(r => r.json()).then(d => {
                      if(d.success) { alert('Thêm bài viết thành công!'); e.currentTarget.reset(); }

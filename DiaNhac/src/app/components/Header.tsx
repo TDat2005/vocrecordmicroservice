@@ -1,4 +1,4 @@
-import { IMAGE_BASE } from '../config/api';
+
 import { Link, useNavigate } from 'react-router';
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -42,7 +42,7 @@ export function Header() {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <img src={`${IMAGE_BASE}/voc_logo_new.png`} alt="Vọc Records" className="h-12 object-contain" />
+          <img src="http://localhost/clonevocrecord/images/voc_logo_new.png" alt="Vọc Records" className="h-12 object-contain" />
         </Link>
 
         {/* Search Bar - Desktop */}

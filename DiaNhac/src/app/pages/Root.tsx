@@ -1,4 +1,4 @@
-import { IMAGE_BASE } from '../config/api';
+
 import { Outlet } from 'react-router';
 import { Header } from '../components/Header';
 import { MobileBottomNav } from '../components/MobileBottomNav';
@@ -55,21 +55,21 @@ export function Root() {
             {/* Vọc Records */}
             <div>
               {/* Logo Footer */}
-              <img src={`${IMAGE_BASE}/voc_logo_new.png`} alt="Vọc Records" className="h-16 object-contain mb-4" />
+              <img src="http://localhost/clonevocrecord/images/voc_logo_new.png" alt="Vọc Records" className="h-16 object-contain mb-4" />
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>
-                  <a href="/about" className="hover:text-white transition-colors">
-                    Giới thiệu
+                  <a href="/" className="hover:text-white transition-colors">
+                    Trang chủ
                   </a>
                 </li>
                 <li>
-                  <a href="/policy" className="hover:text-white transition-colors">
-                    Chính sách
+                  <a href="/blog" className="hover:text-white transition-colors">
+                    Về chúng tôi
                   </a>
                 </li>
                 <li>
-                  <a href="/contact" className="hover:text-white transition-colors">
-                    Liên hệ
+                  <a href="/account" className="hover:text-white transition-colors">
+                    Tài khoản
                   </a>
                 </li>
               </ul>
@@ -90,7 +90,7 @@ export function Root() {
                   </a>
                 </li>
                 <li>
-                  <a href="/cassette" className="hover:text-white transition-colors">
+                  <a href="/cassettes" className="hover:text-white transition-colors">
                     Cassette
                   </a>
                 </li>
@@ -117,8 +117,8 @@ export function Root() {
                   </a>
                 </li>
                 <li>
-                  <a href="/reviews" className="hover:text-white transition-colors">
-                    Đánh giá
+                  <a href="/shop" className="hover:text-white transition-colors">
+                    Cửa hàng
                   </a>
                 </li>
               </ul>
@@ -161,7 +161,7 @@ export function Root() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2026 Vọc Records. All rights reserved.</p>
+            <p>&copy; 2026 Nhóm 7 Công nghệ phần mềm. All rights reserved.</p>
           </div>
         </div>
       </footer>

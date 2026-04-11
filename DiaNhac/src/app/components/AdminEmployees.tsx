@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Users, Lock, Unlock, Key, FileEdit } from 'lucide-react';
-import { API_BASE } from '../config/api';
+
 
 export function AdminEmployees() {
   const [employees, setEmployees] = useState<any[]>([]);
@@ -17,7 +17,7 @@ export function AdminEmployees() {
   });
 
   const fetchEmployees = () => {
-    fetch(`${API_BASE}/employees.php?action=list`)
+    fetch(`http://localhost/clonevocrecord/api/employees.php?action=list`)
       .then(res => res.json())
       .then(data => {
         if (data.success) setEmployees(data.data);
@@ -32,7 +32,7 @@ export function AdminEmployees() {
   const handleToggleStatus = (account_id: number, currentStatus: number) => {
     if (!window.confirm(`Bạn có chắc muốn ${currentStatus === 1 ? 'KHOÁ' : 'MỞ KHOÁ'} tài khoản này?`)) return;
     
-    fetch(`${API_BASE}/employees.php?action=toggle_status`, {
+    fetch(`http://localhost/clonevocrecord/api/employees.php?action=toggle_status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ account_id, status: currentStatus === 1 ? 0 : 1 })
@@ -47,7 +47,7 @@ export function AdminEmployees() {
   const handleSave = (e: React.FormEvent) => {
       e.preventDefault();
       const action = formData.id === 0 ? 'create' : 'update';
-      fetch(`${API_BASE}/employees.php?action=${action}`, {
+      fetch(`http://localhost/clonevocrecord/api/employees.php?action=${action}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)

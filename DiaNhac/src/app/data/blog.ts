@@ -1,4 +1,4 @@
-﻿import { IMAGE_BASE } from '../config/api';
+
 export interface BlogPost {
   id: number;
   title: string;
@@ -23,7 +23,7 @@ export const blogPosts: BlogPost[] = [
     title: "Tại sao đĩa than (Vinyl) lại đang trở lại mạnh mẽ trong kỷ nguyên số?",
     description: "Khám phá sức hút mãnh liệt của âm thanh analog và tại sao giới trẻ ngày nay lại ưa chuộng việc sưu tầm đĩa than hơn bao giờ hết.",
     category: "Kiến thức Vinyl",
-    image: `${IMAGE_BASE}/blog1.png`,
+    image: "http://localhost/clonevocrecord/images/blog1.png",
     date: "2024-03-20",
     author: "Vọc Admin"
   },
@@ -32,7 +32,7 @@ export const blogPosts: BlogPost[] = [
     title: "Review Album: 'Dark Side of the Moon' - Tuyệt tác không tuổi của Pink Floyd",
     description: "Một cái nhìn sâu sắc về chất lượng âm thanh và ý nghĩa nghệ thuật của một trong những album đĩa than bán chạy nhất mọi thời đại.",
     category: "Review Album",
-    image: `${IMAGE_BASE}/blog2.png`,
+    image: "http://localhost/clonevocrecord/images/blog2.png",
     date: "2024-03-15",
     author: "Tùng Vinyl"
   },
@@ -41,7 +41,7 @@ export const blogPosts: BlogPost[] = [
     title: "Hướng dẫn bảo quản đĩa than: Những sai lầm phổ biến bạn cần tránh",
     description: "Việc bảo quản không đúng cách có thể làm hỏng rãnh đĩa vĩnh viễn. Hãy cùng điểm qua những lưu ý quan trọng để giữ đĩa luôn như mới.",
     category: "Kiến thức Vinyl",
-    image: `${IMAGE_BASE}/blog3.png`,
+    image: "http://localhost/clonevocrecord/images/blog3.png",
     date: "2024-03-10",
     author: "Vọc Records"
   },
@@ -50,7 +50,7 @@ export const blogPosts: BlogPost[] = [
     title: "City Pop: Dòng nhạc Nhật Bản đang 'hồi sinh' trên toàn thế giới",
     description: "Tìm hiểu về nguồn gốc của City Pop và tại sao những giai điệu từ thập niên 80 lại trở thành xu hướng nghe nhạc của giới trẻ hiện nay.",
     category: "Văn hóa Analog",
-    image: `${IMAGE_BASE}/blog4.png`,
+    image: "http://localhost/clonevocrecord/images/blog4.png",
     date: "2024-03-05",
     author: "Hoàng Jazz"
   },

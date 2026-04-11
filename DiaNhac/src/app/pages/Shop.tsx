@@ -1,9 +1,9 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Filter, ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { API_BASE } from '../config/api';
+
 
 const genres = [
   "Tất cả", "Đĩa Than (Vinyl)", "Cassette", "Máy Quay Đĩa (Turntable)", "Phụ Kiện",
@@ -41,12 +41,12 @@ export function Shop() {
     if (!customerId) return;
 
     if (isInWishlist(record.id)) {
-      fetch(`${API_BASE}/wishlist.php?action=remove`, {
+      fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=remove`, {
         method: 'POST', headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ customer_id: customerId, product_id: record.id })
       }).then(r => r.json()).then(d => { if (d.success) removeFromWishlist(record.id); });
     } else {
-      fetch(`${API_BASE}/wishlist.php?action=add`, {
+      fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=add`, {
         method: 'POST', headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ customer_id: customerId, product_id: record.id })
       }).then(r => r.json()).then(d => {
@@ -57,7 +57,7 @@ export function Shop() {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE}/products.php?action=list`)
+    fetch(`http://localhost/clonevocrecord/api/products.php?action=list`)
       .then(res => res.json())
       .then(data => {
         if(data.success && data.data) {

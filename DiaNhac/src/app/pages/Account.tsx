@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { User, Package, Heart, Edit2, Save, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { API_BASE } from '../config/api';
+
 
 type Tab = 'profile' | 'orders' | 'wishlist';
 
@@ -41,7 +41,7 @@ export function Account() {
 
     if (userData.customer_id) {
        // Profile
-       fetch(`${API_BASE}/account.php?action=get_profile&customer_id=${userData.customer_id}`)
+       fetch(`http://localhost/clonevocrecord/api/account.php?action=get_profile&customer_id=${userData.customer_id}`)
          .then(res => res.json())
          .then(data => { if(data.success) setProfileData(data.data) });
 
@@ -49,21 +49,21 @@ export function Account() {
        fetchOrdersData(userData.customer_id);
 
        // Wishlist
-       fetch(`${API_BASE}/wishlist.php?action=list&customer_id=${userData.customer_id}`)
+       fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=list&customer_id=${userData.customer_id}`)
          .then(res => res.json())
          .then(data => { if(data.success) setWishlist(data.data) });
     }
   }, [navigate]);
 
   const fetchOrdersData = (custId: any) => {
-       fetch(`${API_BASE}/orders.php?action=list&customer_id=${custId}`)
+       fetch(`http://localhost/clonevocrecord/api/orders.php?action=list&customer_id=${custId}`)
          .then(res => res.json())
          .then(data => { if(data.success) setOrders(data.data) });
   };
 
   const handleCancelOrder = (orderId: number) => {
     if (!window.confirm('BẠN CHẮC CHẮN MUỐN HỦY ĐƠN HÀNG NÀY? MỌI THAO TÁC CÓ THỂ KHÔNG THỂ HOÀN TÁC!')) return;
-    fetch(`${API_BASE}/orders.php?action=cancel_order`, {
+    fetch(`http://localhost/clonevocrecord/api/orders.php?action=cancel_order`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ order_id: orderId, customer_id: user.customer_id })
@@ -89,7 +89,7 @@ export function Account() {
 
   const handleSaveProfile = () => {
     if(!user || !user.customer_id) return;
-    fetch(`${API_BASE}/account.php?action=update_profile`, {
+    fetch(`http://localhost/clonevocrecord/api/account.php?action=update_profile`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -110,7 +110,7 @@ export function Account() {
 
   const handleRemoveWishlist = (productId: number) => {
     if(!user || !user.customer_id) return;
-    fetch(`${API_BASE}/wishlist.php?action=remove`, {
+    fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=remove`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ customer_id: user.customer_id, product_id: productId })

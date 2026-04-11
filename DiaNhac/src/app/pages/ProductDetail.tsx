@@ -1,9 +1,9 @@
-﻿import { useParams, Link, useNavigate } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
 import { ArrowLeft, ShoppingCart, Check, Plus, Minus, Heart, Youtube } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useState, useEffect } from 'react';
-import { API_BASE } from '../config/api';
+
 
 export function ProductDetail() {
   const { id } = useParams();
@@ -20,12 +20,12 @@ export function ProductDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    fetch(`${API_BASE}/products.php?action=detail&id=${id}`)
+    fetch(`http://localhost/clonevocrecord/api/products.php?action=detail&id=${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.data) {
           setRecord(data.data);
-          fetch(`${API_BASE}/products.php?action=list&category=${data.data.genre}`)
+          fetch(`http://localhost/clonevocrecord/api/products.php?action=list&category=${data.data.genre}`)
             .then(r => r.json())
             .then(d => {
               if (d.success && d.data) {
@@ -101,7 +101,7 @@ export function ProductDetail() {
 
     if (isInWishlist(record.id)) {
       // Xóa khỏi wishlist
-      fetch(`${API_BASE}/wishlist.php?action=remove`, {
+      fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=remove`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ customer_id: customerId, product_id: record.id })
@@ -110,7 +110,7 @@ export function ProductDetail() {
       });
     } else {
       // Thêm vào wishlist
-      fetch(`${API_BASE}/wishlist.php?action=add`, {
+      fetch(`http://localhost/clonevocrecord/api/wishlist.php?action=add`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ customer_id: customerId, product_id: record.id })

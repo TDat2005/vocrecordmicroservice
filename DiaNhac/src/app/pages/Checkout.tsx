@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { ShoppingBag, CreditCard, Truck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { API_BASE } from '../config/api';
+
 
 export function Checkout() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export function Checkout() {
         const u = JSON.parse(loggedInUser);
         setUser(u);
         if(u.customer_id) {
-            fetch(`${API_BASE}/account.php?action=get_addresses&customer_id=${u.customer_id}`)
+            fetch(`http://localhost/clonevocrecord/api/account.php?action=get_addresses&customer_id=${u.customer_id}`)
             .then(res => res.json())
             .then(addrData => {
                 if(addrData.success && addrData.data && addrData.data.length > 0) {
@@ -38,26 +38,29 @@ export function Checkout() {
                     setSelectedAddrId(addrData.data[0].MaDC);
                 } else {
                     // Nếu chưa có sổ, lấy profile mặc định dựng 1 địa chỉ ảo
-                    fetch(`${API_BASE}/account.php?action=get_profile&customer_id=${u.customer_id}`)
+                    fetch(`http://localhost/clonevocrecord/api/account.php?action=get_profile&customer_id=${u.customer_id}`)
                     .then(res => res.json())
                     .then(data => {
                         if(data.success && data.data && (data.data.address || data.data.phone)) {
                             const profileAddr = {
-                                MaDC: 'profile_default',
-                                NguoiNhan: data.data.fullName,
-                                SoDienThoai: data.data.phone,
-                                DiaChi: data.data.address,
-                                isNew: true
+                                MaDC: 'default_profile',
+                                TenNguoiNhan: data.data.full_name || '',
+                                SDTNhan: data.data.phone || '',
+                                DiaChiChiTiet: data.data.address || ''
                             };
                             setSavedAddresses([profileAddr]);
-                            setSelectedAddrId(profileAddr.MaDC);
+                            setSelectedAddrId('default_profile');
                         }
                     });
                 }
             });
-        }
+         }
+    } else {
+        // Chưa đăng nhập thì bắt đăng nhập mới được mua hàng
+        alert("Bạn cần đăng nhập để tiến hành đặt hàng!");
+        navigate('/login', { state: { returnUrl: '/checkout' } });
     }
-  }, []);
+  }, [navigate]);
 
   // Redirect if cart is empty
   if (items.length === 0) {
@@ -122,7 +125,7 @@ export function Checkout() {
          }
     }
 
-    fetch(`${API_BASE}/orders.php?action=create`, {
+    fetch(`http://localhost/clonevocrecord/api/orders.php?action=create`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
@@ -165,15 +168,33 @@ export function Checkout() {
       setNewAddrForm({ recipientName: '', recipientPhone: '', address: '' });
   };
 
+  // Auto-polling: Tự động kiểm tra thanh toán mỗi 5 giây khi modal QR đang mở
+  useEffect(() => {
+    if (!payosModalData) return;
+    const interval = setInterval(() => {
+      fetch(`http://localhost/clonevocrecord/api/orders.php?action=check_status&order_id=${payosModalData.order_id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.status === 'dathanhtoan') {
+            clearInterval(interval);
+            clearCart();
+            navigate('/payment-result?orderCode=' + payosModalData.orderCode);
+          }
+        })
+        .catch(() => {}); // Bỏ qua lỗi mạng khi polling
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [payosModalData]);
+
   const handleCheckPaid = () => {
-       fetch(`${API_BASE}/orders.php?action=check_status&order_id=${payosModalData.order_id}`)
+       fetch(`http://localhost/clonevocrecord/api/orders.php?action=check_status&order_id=${payosModalData.order_id}`)
        .then(res => res.json())
        .then(data => {
            if(data.success && data.status === 'dathanhtoan') {
                clearCart();
                navigate('/payment-result?orderCode=' + payosModalData.orderCode);
            } else {
-               alert('Hệ thống chưa ghi nhận thanh toán. Nếu bạn đã quét mã, vui lòng chờ vài giây hoặc kiểm tra lại!');
+               alert('Hệ thống chưa ghi nhận thanh toán. Đang kiểm tra tự động mỗi 5 giây, vui lòng chờ...');
            }
        });
   };
@@ -181,7 +202,7 @@ export function Checkout() {
   const handleApplyCoupon = () => {
     if (!couponInput) return;
     setCouponLoading(true);
-    fetch(`${API_BASE}/discount.php?action=check`, {
+    fetch(`http://localhost/clonevocrecord/api/discount.php?action=check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponInput, cartTotal: getCartTotal() })

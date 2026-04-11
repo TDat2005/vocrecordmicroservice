@@ -1,14 +1,14 @@
 import { Link } from 'react-router';
 import { Music, Disc3, Headphones, TrendingUp, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { API_BASE, IMAGE_BASE } from '../config/api';
+
 
 export function Home() {
   const [featuredRecords, setFeaturedRecords] = useState<any[]>([]);
   const [newReleases, setNewReleases] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/products.php?action=list`)
+    fetch(`http://localhost/clonevocrecord/api/products.php?action=list`)
       .then(res => res.json())
       .then(data => {
         if(data.success && data.data) {
@@ -26,7 +26,7 @@ export function Home() {
         <div className="container mx-auto px-4 py-8 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="border-2 border-black bg-yellow-400 p-8 flex flex-col justify-center min-h-[400px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all relative overflow-hidden group">
-                <div className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-60 group-hover:opacity-80 transition-opacity" style={{ backgroundImage: `url(${IMAGE_BASE}/Photo-New-disc.png)` }}></div>
+                <div className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-60 group-hover:opacity-80 transition-opacity" style={{ backgroundImage: `url(http://localhost/clonevocrecord/images/Photo-New-disc.png)` }}></div>
                 <div className="relative z-10">
                   <h1 className="text-5xl md:text-7xl font-bold mb-4 uppercase" style={{ fontFamily: 'var(--font-heading)' }}>ĐĨA MỚI</h1>
                   <p className="text-xl font-bold uppercase mb-8">Trải nghiệm âm nhạc cực đỉnh với chất lượng hoàn thiện tuyệt đối.</p>
@@ -36,7 +36,7 @@ export function Home() {
                 </div>
             </div>
             <div className="border-2 border-black bg-red-600 text-white p-8 flex flex-col justify-center min-h-[400px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all relative overflow-hidden group">
-                <div className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-50 group-hover:opacity-70 transition-opacity" style={{ backgroundImage: `url(${IMAGE_BASE}/Photo-Vintage-disc.png)` }}></div>
+                <div className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-50 group-hover:opacity-70 transition-opacity" style={{ backgroundImage: `url(http://localhost/clonevocrecord/images/Photo-Vintage-disc.png)` }}></div>
                 <div className="relative z-10">
                   <h1 className="text-5xl md:text-7xl font-bold mb-4 uppercase text-black" style={{ fontFamily: 'var(--font-heading)' }}>ĐĨA VINTAGE</h1>
                   <p className="text-xl text-black font-bold uppercase mb-8">Hơn 5000+ đĩa qua sử dụng được kiểm tra và lọc kĩ lưỡng.</p>
@@ -52,7 +52,7 @@ export function Home() {
       {/* Promo Banner */}
       <section className="bg-white border-b-2 border-black">
         <div className="w-full h-[300px] md:h-[400px] relative overflow-hidden">
-            <img src={`${IMAGE_BASE}/DEMO_PROMO-1.jpg`} alt="Promo Promo Promo" className="w-full h-full object-cover" />
+            <img src="http://localhost/clonevocrecord/images/DEMO_PROMO-1.jpg" alt="Promo Promo Promo" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center p-4">
                 <div className="bg-white border-4 border-black p-6 md:p-10 text-center max-w-2xl transform hover:rotate-2 transition-transform cursor-pointer shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
                     <h2 className="text-3xl md:text-5xl font-bold uppercase mb-4 text-black">BIG SALE MÙA HÈ ☀️</h2>

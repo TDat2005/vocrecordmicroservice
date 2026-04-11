@@ -1,4 +1,4 @@
-﻿import { IMAGE_BASE } from '../config/api';
+
 export interface Guide {
   id: number;
   title: string;
@@ -21,7 +21,7 @@ export const guides: Guide[] = [
     title: "Cách vệ sinh đĩa than sạch như mới chỉ trong 3 bước",
     description: "Hướng dẫn chi tiết cách vệ sinh đĩa vinyl bằng tay tại nhà mà không cần dùng đến thiết bị đắt tiền.",
     category: "Hướng dẫn cơ bản",
-    image: `${IMAGE_BASE}/blog3.png`,
+    image: "http://localhost/clonevocrecord/images/blog3.png",
     difficulty: "Dễ"
   },
   {
@@ -29,7 +29,7 @@ export const guides: Guide[] = [
     title: "Cân chỉnh kim (Stylus) và lực đè (Tracking Force) chuẩn xác",
     description: "Việc cân chỉnh kim đúng cách giúp âm thanh trung thực hơn và kéo dài tuổi thọ của cả đĩa lẫn kim.",
     category: "Bảo trì thiết bị",
-    image: `${IMAGE_BASE}/blog2.png`,
+    image: "http://localhost/clonevocrecord/images/blog2.png",
     difficulty: "Trung bình"
   },
   {
@@ -37,7 +37,7 @@ export const guides: Guide[] = [
     title: "Nâng cấp Phono Preamp để tối ưu chất lượng âm thanh",
     description: "Hiểu về vai trò của Phono Preamp và cách chọn linh kiện phù hợp cho dàn âm thanh hi-fi của bạn.",
     category: "Kỹ thuật nâng cao",
-    image: `${IMAGE_BASE}/blog4.png`,
+    image: "http://localhost/clonevocrecord/images/blog4.png",
     difficulty: "Nâng cao"
   },
   {
@@ -45,7 +45,7 @@ export const guides: Guide[] = [
     title: "Bí quyết săn đĩa vintage tại các cửa hàng Second-hand",
     description: "Làm thế nào để kiểm tra tình trạng đĩa (Grading) ngay tại cửa hàng để không mua phải đĩa lỗi.",
     category: "Hướng dẫn cơ bản",
-    image: `${IMAGE_BASE}/blog1.png`,
+    image: "http://localhost/clonevocrecord/images/blog1.png",
     difficulty: "Dễ"
   }
 ];

@@ -1,9 +1,10 @@
-﻿import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { API_BASE } from '../config/api';
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router';
+
 
 export function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loginAccount, setLoginAccount] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoginLoading, setIsLoginLoading] = useState(false);
@@ -13,7 +14,7 @@ export function Login() {
     setIsLoginLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/auth.php?action=login`, {
+      const response = await fetch(`http://localhost/clonevocrecord/api/auth.php?action=login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginAccount, password: loginPassword })
@@ -23,8 +24,12 @@ export function Login() {
 
       if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        if (data.user.role === 'admin' || data.user.role === 'nhanvien') navigate('/admin');
-        else navigate('/shop');
+        if (data.user.role === 'admin' || data.user.role === 'nhanvien') {
+           navigate('/admin');
+        } else {
+           const returnUrl = location.state?.returnUrl || '/shop';
+           navigate(returnUrl);
+        }
       } else {
         alert(data.message || 'Đăng nhập thất bại!');
       }

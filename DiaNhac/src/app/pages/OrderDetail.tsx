@@ -1,7 +1,7 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { Package, Truck, CheckCircle2, Clock, XCircle, CreditCard } from 'lucide-react';
-import { API_BASE } from '../config/api';
+
 
 export function OrderDetail() {
   const { id } = useParams();
@@ -11,7 +11,7 @@ export function OrderDetail() {
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
     const user = loggedInUser ? JSON.parse(loggedInUser) : null;
-    const url = `${API_BASE}/orders.php?action=order_detail&order_id=${id}${user && user.customer_id ? `&customer_id=${user.customer_id}` : ''}`;
+    const url = `http://localhost/clonevocrecord/api/orders.php?action=order_detail&order_id=${id}${user && user.customer_id ? `&customer_id=${user.customer_id}` : ''}`;
     
     fetch(url)
       .then(res => res.json())
