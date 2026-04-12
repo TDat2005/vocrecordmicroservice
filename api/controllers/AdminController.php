@@ -17,10 +17,10 @@ class AdminController {
     }
 
     public function dashboardStats() {
-        $stmtRev = $this->pdo->query("SELECT SUM(TongTien) as todayRevenue FROM DonHang WHERE DATE(NgayDat) = CURDATE()");
+        $stmtRev = $this->pdo->query("SELECT SUM(TongTien) as todayRevenue FROM DonHang WHERE DATE(NgayDat) = CURDATE() AND TrangThai = 'hoanthanh'");
         $todayRevenue = $stmtRev->fetch(PDO::FETCH_ASSOC)['todayRevenue'] ?? 0;
 
-        $stmtOrders = $this->pdo->query("SELECT COUNT(MaDH) as todayOrders FROM DonHang WHERE DATE(NgayDat) = CURDATE()");
+        $stmtOrders = $this->pdo->query("SELECT COUNT(MaDH) as todayOrders FROM DonHang WHERE DATE(NgayDat) = CURDATE() AND TrangThai != 'dahuy'");
         $todayOrders = $stmtOrders->fetch(PDO::FETCH_ASSOC)['todayOrders'] ?? 0;
 
         $stmtProducts = $this->pdo->query("SELECT COUNT(MaSP) as totalProducts FROM SanPham");
@@ -33,6 +33,8 @@ class AdminController {
             SELECT sp.MaSP as id, sp.TenSP as name, sp.NgheSi as artist, SUM(ct.SoLuong) as sales, SUM(ct.SoLuong * ct.DonGia) as revenue
             FROM ChiTietDonHang ct
             JOIN SanPham sp ON ct.MaSP = sp.MaSP
+            JOIN DonHang dh ON ct.MaDH = dh.MaDH
+            WHERE dh.TrangThai = 'hoanthanh'
             GROUP BY sp.MaSP
             ORDER BY sales DESC
             LIMIT 5
@@ -69,7 +71,7 @@ class AdminController {
         $stmt = $this->pdo->prepare("
             SELECT DATE(NgayDat) as date, SUM(TongTien) as revenue, COUNT(MaDH) as orders
             FROM DonHang
-            WHERE DATE(NgayDat) >= ? AND DATE(NgayDat) <= ? AND TrangThai != 'dahuy'
+            WHERE DATE(NgayDat) >= ? AND DATE(NgayDat) <= ? AND TrangThai = 'hoanthanh'
             GROUP BY DATE(NgayDat)
             ORDER BY DATE(NgayDat) ASC
         ");

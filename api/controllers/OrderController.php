@@ -242,11 +242,53 @@ class OrderController {
             return;
         }
         $order = $this->model->getById($orderId, null);
-        if ($order) {
-            echo json_encode(['success' => true, 'status' => $order['TrangThaiTT']]);
-        } else {
+        if (!$order) {
             echo json_encode(['success' => false]);
+            return;
         }
+
+        // Nếu đã thanh toán rồi thì trả về luôn
+        if ($order['TrangThaiTT'] === 'dathanhtoan') {
+            echo json_encode(['success' => true, 'status' => 'dathanhtoan']);
+            return;
+        }
+
+        // Nếu chưa thanh toán và là payos, chủ động hỏi PayOS API
+        if ($order['ThanhToanHinhThuc'] === 'payos' && $order['MaGiaoDich']) {
+            try {
+                $orderCode = $order['MaGiaoDich'];
+                $ch = curl_init("https://api-merchant.payos.vn/v2/payment-requests/{$orderCode}");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/json',
+                    'x-client-id: ' . PAYOS_CLIENT_ID,
+                    'x-api-key: ' . PAYOS_API_KEY
+                ]);
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $result = json_decode($response, true);
+                if (isset($result['code']) && $result['code'] == '00' && isset($result['data']['status'])) {
+                    $payosStatus = $result['data']['status'];
+                    // PAID = thành công, CANCELLED = đã hủy
+                    if ($payosStatus === 'PAID') {
+                        // Cập nhật DB
+                        $this->pdo->prepare("UPDATE ThanhToan SET TrangThaiTT = 'dathanhtoan' WHERE MaDH = ?")->execute([$orderId]);
+                        $this->pdo->prepare("UPDATE DonHang SET TrangThai = 'daxacnhan' WHERE MaDH = ? AND TrangThai = 'choxacnhan'")->execute([$orderId]);
+                        echo json_encode(['success' => true, 'status' => 'dathanhtoan']);
+                        return;
+                    } elseif ($payosStatus === 'CANCELLED' || $payosStatus === 'EXPIRED') {
+                        $this->pdo->prepare("UPDATE ThanhToan SET TrangThaiTT = 'thatbai' WHERE MaDH = ?")->execute([$orderId]);
+                        echo json_encode(['success' => true, 'status' => 'thatbai']);
+                        return;
+                    }
+                }
+            } catch (Exception $e) {
+                error_log('PayOS check error: ' . $e->getMessage());
+            }
+        }
+
+        echo json_encode(['success' => true, 'status' => $order['TrangThaiTT']]);
     }
 }
 ?>

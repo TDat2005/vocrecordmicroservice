@@ -28,7 +28,7 @@ export function Shop() {
     e.preventDefault();
     e.stopPropagation();
     if (record.stock <= 0) return;
-    addToCart({ id: record.id, title: record.title, artist: record.artist, price: record.price, image: record.image });
+    addToCart({ id: record.id, title: record.title, artist: record.artist, price: record.price, image: record.image, stock: record.stock });
   };
 
   const handleQuickWishlist = (e: React.MouseEvent, record: any) => {

@@ -301,7 +301,7 @@ export function Account() {
                           <span className="font-bold text-lg">{formatPrice(item.price)}</span>
                         </div>
                         <div className="mt-auto flex gap-2">
-                          <button onClick={() => addToCart({ id: item.id, title: item.title, artist: item.artist, price: item.price, image: item.image })} className="flex-1 px-3 py-2 bg-black text-white font-bold text-xs uppercase hover:bg-gray-800 transition-colors">
+                          <button onClick={() => addToCart({ id: item.id, title: item.title, artist: item.artist, price: item.price, image: item.image, stock: item.stock || 99 })} className="flex-1 px-3 py-2 bg-black text-white font-bold text-xs uppercase hover:bg-gray-800 transition-colors">
                             VÀO GIỎ
                           </button>
                           <button onClick={() => handleRemoveWishlist(item.id)} className="px-3 py-2 border-2 border-black hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors" title="Xóa">

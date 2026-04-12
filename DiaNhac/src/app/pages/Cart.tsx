@@ -122,7 +122,8 @@ export function Cart() {
                           </span>
                           <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="w-10 h-10 flex items-center justify-center bg-gray-50 hover:bg-black hover:text-white transition-colors"
+                              disabled={item.quantity >= item.stock}
+                              className="w-10 h-10 flex items-center justify-center bg-gray-50 hover:bg-black hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-50 disabled:hover:text-black"
                           >
                               <Plus className="w-4 h-4 cursor-pointer pointer-events-none" />
                           </button>

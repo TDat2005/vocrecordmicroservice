@@ -13,9 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 class Database
 {
     private $host = 'localhost';
-    private $db = 'vocrecord';
-    private $user = 'kaichou';
-    private $pass = '123456';
+    private $db = 'clonevocrecord';
+    private $user = 'root';
+    private $pass = '';
     private $charset = 'utf8mb4';
     private $pdo;
 

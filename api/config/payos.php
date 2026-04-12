@@ -7,6 +7,6 @@ define('PAYOS_CHECKSUM_KEY', '5eef28884b3861b5c963b3b9ab5f798b2a71116edba17bd6fe
 
 // URL Frontend để PayOS gọi về sau khi giao dịch
 // ⚠️ KHI DEPLOY LÊN VPS: Đổi localhost:5173 thành domain thật (ví dụ: https://yourdomain.com)
-define('PAYOS_RETURN_URL', 'http://103.249.117.229/payment-result');
-define('PAYOS_CANCEL_URL', 'http://103.249.117.229/payment-result');
+define('PAYOS_RETURN_URL', 'http://localhost:5173/payment-result');
+define('PAYOS_CANCEL_URL', 'http://localhost:5173/payment-result');
 ?>

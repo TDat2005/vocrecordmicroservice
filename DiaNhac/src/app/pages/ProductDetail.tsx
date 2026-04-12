@@ -70,6 +70,7 @@ export function ProductDetail() {
         artist: record.artist,
         price: record.price,
         image: record.image,
+        stock: record.stock,
       }, quantity);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
@@ -84,6 +85,7 @@ export function ProductDetail() {
             artist: record.artist,
             price: record.price,
             image: record.image,
+            stock: record.stock,
           }, quantity);
           navigate('/checkout');
       }

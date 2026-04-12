@@ -213,7 +213,7 @@ class AuthController {
     }
 
     /**
-     * Xác thực OTP quên mật khẩu
+     * Xác thực OTP quên mật khẩu (chỉ kiểm tra, chưa đánh dấu đã dùng)
      */
     public function verifyForgotOTP($data) {
         $email = trim($data['email'] ?? '');
@@ -230,26 +230,32 @@ class AuthController {
             return;
         }
 
-        // Đánh dấu đã dùng
-        $this->otpModel->markUsed($email, $otpCode);
-
+        // Chưa đánh dấu đã dùng - OTP sẽ được xác thực lần nữa ở bước resetPassword
         echo json_encode(['success' => true, 'message' => 'Xác thực thành công. Bạn có thể đặt mật khẩu mới.']);
     }
 
     /**
-     * Đặt lại mật khẩu mới (sau khi xác thực OTP)
+     * Đặt lại mật khẩu mới (yêu cầu OTP hợp lệ để đảm bảo bảo mật)
      */
     public function resetPassword($data) {
         $email = trim($data['email'] ?? '');
+        $otpCode = trim($data['otp'] ?? '');
         $newPassword = $data['new_password'] ?? '';
 
-        if (!$email || !$newPassword) {
+        if (!$email || !$otpCode || !$newPassword) {
             echo json_encode(['success' => false, 'message' => 'Thiếu thông tin.']);
             return;
         }
 
         if (strlen($newPassword) < 6) {
             echo json_encode(['success' => false, 'message' => 'Mật khẩu phải có ít nhất 6 ký tự.']);
+            return;
+        }
+
+        // Xác thực lại OTP trước khi đổi mật khẩu (bảo mật)
+        $validOtp = $this->otpModel->verify($email, $otpCode, 'quenmatkhau');
+        if (!$validOtp) {
+            echo json_encode(['success' => false, 'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.']);
             return;
         }
 
@@ -263,6 +269,8 @@ class AuthController {
         $updated = $this->accountModel->updatePassword($user['MaTK'], $hashedPassword);
 
         if ($updated) {
+            // Đánh dấu OTP đã dùng sau khi đổi mật khẩu thành công
+            $this->otpModel->markUsed($email, $otpCode);
             echo json_encode(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Lỗi cập nhật mật khẩu.']);
