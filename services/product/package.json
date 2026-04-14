@@ -1,0 +1,18 @@
+{
+  "name": "groove-product-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "mysql2": "^3.11.0",
+    "sequelize": "^6.37.0",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "ioredis": "^5.4.1",
+    "axios": "^1.7.0"
+  }
+}
