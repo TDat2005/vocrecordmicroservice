@@ -145,7 +145,9 @@ exports.checkStatus = async (req, res) => {
           await payment.save();
           return res.json({ success: true, data: { status: 'thatbai' } });
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("PayOS Check Status Error:", e.response?.data || e.message);
+      }
     }
 
     res.json({ success: true, data: { status: payment.status } });

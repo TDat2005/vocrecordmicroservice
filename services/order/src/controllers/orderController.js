@@ -68,7 +68,16 @@ exports.create = async (req, res) => {
 
     await t.commit();
 
-    // Handle PayOS payment
+    // Create payment record first
+    try {
+      await axios.post(`${PAYMENT_URL}/create-record`, {
+        order_id: order.id, amount: finalTotal,
+        method: phuongThucThanhToan || 'cod',
+        status: 'chuathanhtoan',
+      });
+    } catch (e) { /* ignore */ }
+
+    // Handle PayOS payment link creation
     let payosData = null;
     if (phuongThucThanhToan === 'payos') {
       try {
@@ -79,15 +88,6 @@ exports.create = async (req, res) => {
         if (payRes.data.success) payosData = payRes.data.data;
       } catch (e) { /* payment link creation failed, order still valid */ }
     }
-
-    // Create payment record
-    try {
-      await axios.post(`${PAYMENT_URL}/create-record`, {
-        order_id: order.id, amount: finalTotal,
-        method: phuongThucThanhToan || 'cod',
-        status: 'chuathanhtoan',
-      });
-    } catch (e) { /* ignore */ }
 
     // Send order confirmation email
     try {

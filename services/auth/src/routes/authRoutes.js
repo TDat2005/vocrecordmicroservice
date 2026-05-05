@@ -14,6 +14,7 @@ router.post('/reset-password', ctrl.resetPassword);
 // Internal endpoints (called by other services)
 router.get('/verify-token', ctrl.verifyToken);
 router.post('/create-account', ctrl.createAccount);
+router.post('/accounts-by-ids', ctrl.getAccountsByIds);
 router.post('/update-password', ctrl.updatePassword);
 router.post('/toggle-status', ctrl.toggleStatus);
 

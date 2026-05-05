@@ -18,6 +18,6 @@ router.post('/employees/toggle-status', ctrl.toggleEmployeeStatus);
 // Wishlist routes
 router.get('/wishlist/:customerId', ctrl.getWishlist);
 router.post('/wishlist', ctrl.addToWishlist);
-router.delete('/wishlist', ctrl.removeFromWishlist);
+router.post('/wishlist/remove', ctrl.removeFromWishlist);
 
 module.exports = router;

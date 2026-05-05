@@ -76,7 +76,47 @@ exports.getAllCustomers = async (req, res) => {
 exports.getAllEmployees = async (req, res) => {
   try {
     const employees = await Employee.findAll({ order: [['created_at', 'DESC']] });
-    res.json({ success: true, data: employees });
+
+    // Enrich with Auth data
+    if (employees.length > 0) {
+      try {
+        const accountIds = employees.map(e => e.account_id);
+        const authRes = await axios.post(`${process.env.AUTH_SERVICE_URL}/accounts-by-ids`, { ids: accountIds });
+        if (authRes.data.success) {
+          const authMap = {};
+          authRes.data.data.forEach(a => { authMap[a.id] = a; });
+          
+          const enriched = employees.map(emp => {
+            const authInfo = authMap[emp.account_id] || {};
+            return {
+              id: emp.id,
+              account_id: emp.account_id,
+              name: emp.full_name,
+              position: emp.position,
+              username: authInfo.username || '',
+              role: authInfo.role || '',
+              status: authInfo.is_active ? 1 : 0
+            };
+          });
+          return res.json({ success: true, data: enriched });
+        }
+      } catch (e) {
+        // Fallback below
+      }
+    }
+    
+    // Fallback if Auth service is unavailable
+    const plain = employees.map(emp => ({
+      id: emp.id,
+      account_id: emp.account_id,
+      name: emp.full_name,
+      position: emp.position,
+      username: '',
+      role: '',
+      status: 0
+    }));
+
+    res.json({ success: true, data: plain });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

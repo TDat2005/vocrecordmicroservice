@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS activity_logs (
 -- Seed accounts (password = '123456' bcrypt hashed)
 -- admin123 cho admin, 123456 cho tất cả
 INSERT INTO accounts (username, password, role) VALUES
-('admin@grooverecords.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'admin'),
-('nv1@grooverecords.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'nhanvien'),
-('nv2@grooverecords.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'nhanvien'),
-('khach1@gmail.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'khachhang'),
-('khach2@gmail.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'khachhang'),
-('khach3@gmail.com', '$2a$10$8K1p/aEDl/Mn5LMEKHwCNOmqO7F6vGdbD5TS.M9wC8hP5LIrjX1Eq', 'khachhang');
+('admin@grooverecords.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'admin'),
+('nv1@grooverecords.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'nhanvien'),
+('nv2@grooverecords.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'nhanvien'),
+('khach1@gmail.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'khachhang'),
+('khach2@gmail.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'khachhang'),
+('khach3@gmail.com', '$2a$10$MnWZgrdRuTxDV7fdIBDYJunWCGUmO4h1sAXbBvm2oYMRdOJdxx.qG', 'khachhang');
 

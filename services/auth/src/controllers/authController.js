@@ -387,6 +387,23 @@ exports.toggleStatus = async (req, res) => {
   }
 };
 
+// Internal: get accounts by multiple IDs
+exports.getAccountsByIds = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !ids.length) return res.json({ success: true, data: [] });
+    
+    const accounts = await Account.findAll({
+      where: { id: { [Op.in]: ids } },
+      attributes: ['id', 'username', 'role', 'is_active']
+    });
+    
+    res.json({ success: true, data: accounts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 // Activity log
 exports.getActivityLog = async (req, res) => {
   try {
