@@ -75,6 +75,7 @@ export const API = {
     postDetail: (id: number | string) => `${API_BASE}/api/content/posts/${id}`,
     createPost: `${API_BASE}/api/content/posts`,
     updatePost: (id: number | string) => `${API_BASE}/api/content/posts/${id}`,
+    deletePost: (id: number | string) => `${API_BASE}/api/content/posts/${id}`,
   },
 
   // Static assets (images) — these need to be served differently now

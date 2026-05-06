@@ -280,16 +280,28 @@ exports.checkStatus = async (req, res) => {
 exports.dashboardStats = async (req, res) => {
   try {
     const { QueryTypes } = require('sequelize');
+    const startDate = req.query.start || null;
+    const endDate = req.query.end || null;
+    const hasRange = startDate && endDate;
 
-    const [revResult] = await sequelize.query(
-      "SELECT COALESCE(SUM(total), 0) as todayRevenue FROM orders WHERE DATE(created_at) = CURDATE() AND status = 'hoanthanh'",
-      { type: QueryTypes.SELECT }
-    );
+    // Revenue query
+    const revQuery = hasRange
+      ? "SELECT COALESCE(SUM(total), 0) as todayRevenue FROM orders WHERE DATE(created_at) >= ? AND DATE(created_at) <= ? AND status = 'hoanthanh'"
+      : "SELECT COALESCE(SUM(total), 0) as todayRevenue FROM orders WHERE DATE(created_at) = CURDATE() AND status = 'hoanthanh'";
+    const revReplacements = hasRange ? [startDate, endDate] : [];
 
-    const [ordResult] = await sequelize.query(
-      "SELECT COUNT(id) as todayOrders FROM orders WHERE DATE(created_at) = CURDATE() AND status != 'dahuy'",
-      { type: QueryTypes.SELECT }
-    );
+    const [revResult] = await sequelize.query(revQuery, {
+      replacements: revReplacements, type: QueryTypes.SELECT
+    });
+
+    // Order count query
+    const ordQuery = hasRange
+      ? "SELECT COUNT(id) as todayOrders FROM orders WHERE DATE(created_at) >= ? AND DATE(created_at) <= ? AND status != 'dahuy'"
+      : "SELECT COUNT(id) as todayOrders FROM orders WHERE DATE(created_at) = CURDATE() AND status != 'dahuy'";
+
+    const [ordResult] = await sequelize.query(ordQuery, {
+      replacements: revReplacements, type: QueryTypes.SELECT
+    });
 
     // Get product count & customer count from other services
     let totalProducts = 0, totalCustomers = 0, topProducts = [];
@@ -303,12 +315,18 @@ exports.dashboardStats = async (req, res) => {
     } catch (e) {}
 
     // Top products calculation
-    const topItems = await sequelize.query(
-      `SELECT product_id, SUM(quantity) as sales, SUM(quantity * price) as revenue
-       FROM order_items oi JOIN orders o ON oi.order_id = o.id
-       WHERE o.status = 'hoanthanh' GROUP BY product_id ORDER BY sales DESC LIMIT 5`,
-      { type: QueryTypes.SELECT }
-    );
+    const topQuery = hasRange
+      ? `SELECT product_id, SUM(quantity) as sales, SUM(quantity * price) as revenue
+         FROM order_items oi JOIN orders o ON oi.order_id = o.id
+         WHERE o.status = 'hoanthanh' AND DATE(o.created_at) >= ? AND DATE(o.created_at) <= ?
+         GROUP BY product_id ORDER BY sales DESC LIMIT 5`
+      : `SELECT product_id, SUM(quantity) as sales, SUM(quantity * price) as revenue
+         FROM order_items oi JOIN orders o ON oi.order_id = o.id
+         WHERE o.status = 'hoanthanh' GROUP BY product_id ORDER BY sales DESC LIMIT 5`;
+
+    const topItems = await sequelize.query(topQuery, {
+      replacements: revReplacements, type: QueryTypes.SELECT
+    });
 
     if (topItems.length) {
       try {
