@@ -41,6 +41,7 @@ export const API = {
     categories: `${API_BASE}/api/products/categories`,
     inventory: `${API_BASE}/api/products/inventory`,
     importStock: `${API_BASE}/api/products/import-stock`,
+    importHistory: `${API_BASE}/api/products/import-history`,
     stats: `${API_BASE}/api/products/stats`,
     // Discounts
     discounts: `${API_BASE}/api/products/discounts/all`,

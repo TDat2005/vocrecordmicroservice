@@ -79,6 +79,14 @@ exports.create = async (req, res) => {
       if (cat) categoryId = cat.id;
     }
 
+    // Check duplicate by name + artist
+    const existing = await Product.findOne({
+      where: { name: title, artist: artist || '' }
+    });
+    if (existing) {
+      return res.json({ success: false, message: `Sản phẩm "${title}" của "${artist}" đã tồn tại (SP-${existing.id})` });
+    }
+
     const product = await Product.create({
       name: title, artist, genre, price, stock,
       description, image: image || 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=800&q=80',
@@ -188,12 +196,12 @@ exports.getAllDiscounts = async (req, res) => {
 
 exports.createDiscount = async (req, res) => {
   try {
-    const { Code, LoaiGiamGia, GiaTri, DonHangToiThieu, SoLuong, NgayHetHan } = req.body;
-    if (!Code || GiaTri <= 0) return res.json({ success: false, message: 'Dữ liệu không hợp lệ' });
+    const { code, type, value, min_order, quantity, expires_at } = req.body;
+    if (!code || !value || Number(value) <= 0) return res.json({ success: false, message: 'Dữ liệu không hợp lệ' });
 
     await Discount.create({
-      code: Code, type: LoaiGiamGia || 'percent', value: GiaTri,
-      min_order: DonHangToiThieu || 0, quantity: SoLuong || 0, expires_at: NgayHetHan || null,
+      code, type: type || 'percent', value,
+      min_order: min_order || 0, quantity: quantity || 0, expires_at: expires_at || null,
     });
     res.json({ success: true, message: 'Tạo mã thành công' });
   } catch (err) {
@@ -206,10 +214,10 @@ exports.updateDiscount = async (req, res) => {
     const discount = await Discount.findByPk(req.params.id);
     if (!discount) return res.json({ success: false, message: 'Không tìm thấy' });
 
-    const { Code, LoaiGiamGia, GiaTri, DonHangToiThieu, SoLuong, NgayHetHan } = req.body;
+    const { code, type, value, min_order, quantity, expires_at } = req.body;
     await discount.update({
-      code: Code, type: LoaiGiamGia, value: GiaTri,
-      min_order: DonHangToiThieu, quantity: SoLuong, expires_at: NgayHetHan,
+      code, type, value,
+      min_order, quantity, expires_at,
     });
     res.json({ success: true, message: 'Cập nhật thành công' });
   } catch (err) {
@@ -362,6 +370,24 @@ exports.importStock = async (req, res) => {
   } catch (err) {
     await t.rollback();
     res.status(500).json({ success: false, message: 'Lỗi nhập kho: ' + err.message });
+  }
+};
+
+// Import history
+exports.getImportHistory = async (req, res) => {
+  try {
+    const { QueryTypes } = require('sequelize');
+    const receipts = await sequelize.query(
+      `SELECT ir.*, GROUP_CONCAT(CONCAT(p.name,' x',id2.quantity) SEPARATOR ', ') as items_summary
+       FROM import_receipts ir
+       LEFT JOIN import_details id2 ON ir.id = id2.receipt_id
+       LEFT JOIN products p ON id2.product_id = p.id
+       GROUP BY ir.id ORDER BY ir.created_at DESC LIMIT 50`,
+      { type: QueryTypes.SELECT }
+    );
+    res.json({ success: true, data: receipts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
